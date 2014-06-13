@@ -1,2 +1,0 @@
-- name: restart puppetmaster
-  service: name=puppetmaster state=restarted
