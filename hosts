@@ -1,0 +1,5 @@
+[master1]
+master1:22 host_ip=1.2.3.4
+
+[localvm3]
+linux3.vm:22 host_ip=192.168.72.135

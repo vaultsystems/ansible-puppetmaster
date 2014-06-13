@@ -1,0 +1,13 @@
+- name: puppetmaster basics
+  apt: pkg=puppetmaster pkg=git
+- name: dev environment for rubygems
+  apt: pkg=ruby-dev pkg=make
+- name: mysql server
+  apt: pkg=mysql-server pkg=libmysqlclient-dev pkg=python-mysqldb
+- mysql_db: name=puppet state=present
+- gem: name=mysql2 state=present
+- gem: name=rails version=2.3.18 state=present
+- name: upload puppet.conf
+  copy: src={{ puppet_conf }} dest=/etc/puppet/puppet.conf
+  notify: restart puppetmaster
+- service: name=puppetmaster enabled=true state=started
