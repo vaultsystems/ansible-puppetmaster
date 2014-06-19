@@ -1,10 +1,10 @@
 #!/usr/bin/env ansible-playbook -i hosts
 
 ---
-- hosts: linux3.vm
+- hosts: test2
   sudo: yes
 
   roles:
     - role: puppetmaster
       git_repo: git@git.jsbridge.com.au:restricted/puppetconf.git
-      git_branch: puppet3
+      git_head: puppet3

@@ -1,0 +1,10 @@
+#!/usr/bin/env ansible-playbook -i hosts
+
+---
+- hosts: test2
+  sudo: yes
+
+  roles:
+    - role: puppetmaster
+      git_repo: git://github.com/vault-systems/puppet.git
+      git_puppet_env: production
