@@ -12,8 +12,17 @@
   tasks:
     - name: install dnsmasq
       apt: name=dnsmasq state=present
+
     - name: upload dnsmasq config
-      template: src=templates/puppetmaster-tenant/dnsmasq.conf
+      template: src=templates/etc/dnsmasq.conf
                 dest=/etc/dnsmasq.conf
                 backup=yes
     - service: name=dnsmasq enabled=true state=restarted
+
+    - name: upload dnsmasq update script
+      template: src=templates/usr/local/bin/puppet_dns.rb
+                dest=/usr/local/bin/puppet_dns.rb
+
+    - name: upload dnsmasq cron job
+      template: src=templates/etc/cron.d/puppet_dns
+                dest=/etc/cron.d/puppet_dns
