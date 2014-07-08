@@ -1,7 +1,7 @@
 #!/usr/bin/env ansible-playbook -i hosts
 
 ---
-- hosts: test2
+- hosts: puppetmaster
   sudo: yes
 
   roles:
@@ -22,6 +22,7 @@
     - name: upload dnsmasq update script
       template: src=templates/usr/local/bin/puppet_dns.rb
                 dest=/usr/local/bin/puppet_dns.rb
+                mode=700
 
     - name: upload dnsmasq cron job
       template: src=templates/etc/cron.d/puppet_dns
