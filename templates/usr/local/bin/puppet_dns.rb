@@ -19,12 +19,13 @@ while (line = puppet_log.gets)
   if line.include? "GET /production/node/"
     ip = line.match('(?:[0-9]{1,3}\.){3}[0-9]{1,3}').to_s
     host = line.match('node\/(.*)\?').captures.first
-    entries[ip] = [host]
+    entries.delete_if {| key, value | value==host }
+    entries[ip] = host
   end
 end
 
-entries.each {|ip, host| 
-  hosts.write("#{ip} #{host.join(' ')}\n")
+entries.each {|ip, host|
+  hosts.write("#{ip} #{host}\n")
 }
 
 hosts.close

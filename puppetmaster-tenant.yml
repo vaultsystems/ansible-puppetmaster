@@ -6,7 +6,7 @@
 
   roles:
     - role: puppetmaster
-      git_repo: git://github.com/vault-systems/ansible-puppetmaster.git
+      git_repo: git://github.com/vault-systems/puppet-windows.git
       git_puppet_env: production
 
   tasks:
