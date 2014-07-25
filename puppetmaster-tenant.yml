@@ -27,3 +27,6 @@
     - name: upload dnsmasq cron job
       template: src=templates/etc/cron.d/puppet_dns
                 dest=/etc/cron.d/puppet_dns
+
+    - name: set timezone
+      shell: echo "Australia/Sydney" | tee /etc/timezone; dpkg-reconfigure --frontend noninteractive tzdata
