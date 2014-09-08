@@ -43,6 +43,12 @@
     - /usr/share/puppet/rack/puppetmasterd/public
     - /usr/share/puppet/rack/puppetmasterd/tmp
 
+- name: copy config.ru
+  command: cp /usr/share/puppet/ext/rack/config.ru /usr/share/puppet/rack/puppetmasterd/
+
+- name: set config.ru permissions
+  command: chown puppet:puppet /usr/share/puppet/rack/puppetmasterd/config.ru
+
 - name: puppet environments dir
   file: path=/etc/puppet/environments state=directory owner={{ remote_user }}
 
