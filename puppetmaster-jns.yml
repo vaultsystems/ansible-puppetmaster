@@ -17,4 +17,8 @@
       template: src=templates/puppetmaster-tenant/dnsmasq.conf
                 dest=/etc/dnsmasq.conf
                 backup=yes
+    - name: upload logrotate config
+      template: src=templates/etc/logrotate.d/apache2 
+                dest=/etc/logrotate.d/apache2 
+                backup=yes
     - service: name=dnsmasq enabled=true state=restarted
