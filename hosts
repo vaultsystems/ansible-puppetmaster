@@ -6,3 +6,6 @@ master1:22 remote_user=ubuntu
 
 [localvm3]
 linux3.vm:22 remote_user=olegiv
+
+[railsvms]
+linuxvm1.vm remote_user=olegiv

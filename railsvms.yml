@@ -1,0 +1,30 @@
+#!/usr/bin/env ansible-playbook -i hosts
+
+---
+- hosts: railsvms
+  sudo: yes
+
+  tasks:
+   - user: name=rails group=users home=/rails 
+   - file: path=/rails state=directory owner=rails group=users
+   - file: path=/rails/jsbridge state=directory owner=rails group=users
+   - authorized_key: user=rails key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+   - copy: src='~/.ssh/id_rsa' dest='/rails/.ssh/id_rsa' owner=rails mode=600
+   - copy: src='~/.ssh/id_rsa.pub' dest='/rails/.ssh/id_rsa.pub' owner=rails mode=600
+   - copy: content="Host git.jns\n  Port 10022\n" dest='/rails/.ssh/config' owner=rails mode=600
+   - apt_repository: repo="ppa:brightbox/ruby-ng"
+   - apt: pkg={{item}}
+     with_items:
+       - git
+       - ruby2.2
+       - ruby2.2-dev
+       - make
+       - libcurl4-openssl-dev
+       - cmake
+       - g++
+       - libmysqlclient-dev
+       - imagemagick
+       - libmagickwand-dev
+       - libzbar-dev
+   - script: files/build-libsodium.sh creates=/usr/lib/libsodium.so
+   - gem: name=bundler user_install=no
