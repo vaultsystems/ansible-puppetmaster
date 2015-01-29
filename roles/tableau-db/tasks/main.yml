@@ -17,21 +17,21 @@
 
 # Configure apparmor to let mysql work in that dir
 - copy: src=usr.sbin.mysqld dest=/etc/apparmor.d/local/usr.sbin.mysqld
-  register: reload_apparmor
+  register: apparmor_cfg
   with_items:
     - "  /data/ r,"
     - "  /data/** rwk,"
 - service: name=apparmor state=reloaded
-  when: reload_apparmor is defined
+  when: apparmor_cfg|changed
   
 # Copy default mysql data into its data directory, if there's nothing there
 - name: "mysql data is missing - copy default mysql data directory"
   command: cp -Rp /var/lib/mysql /data/
-  register: restart_mysql
+  register: mysql_cfg
   args:
     creates: /data/mysql
 - service: name=mysql state=restarted
-  when: restart_mysql is defined
+  when: mysql_cfg|changed
 
 # Setup mysql database
 - mysql_db: login_host=127.0.0.1 name={{ dbname }} state=present
