@@ -1,0 +1,40 @@
+- authorized_key: user=ubuntu key="{{ item }}"
+  with_items: authorized_keys
+- apt: pkg={{ item }}
+  with_items:
+    - mysql-server-5.6
+    - python-mysqldb
+- service: name=mysql enabled=yes
+- copy: src='my.cnf' dest='/etc/mysql/my.cnf'
+  register: restart_mysql
+
+# Set up data volume at /data
+- name: "data volume is missing - partition and format {{ datavol }}"
+  shell: echo ';' | sfdisk /dev/{{ datavol }} && mkfs.ext4 /dev/{{ datavol }}1
+  args:
+    creates: /dev/{{ datavol }}1
+- mount: name=/data src=/dev/vdb1 state=mounted fstype=ext4
+
+# Configure apparmor to let mysql work in that dir
+- copy: src=usr.sbin.mysqld dest=/etc/apparmor.d/local/usr.sbin.mysqld
+  register: reload_apparmor
+  with_items:
+    - "  /data/ r,"
+    - "  /data/** rwk,"
+- service: name=apparmor state=reloaded
+  when: reload_apparmor is defined
+  
+# Copy default mysql data into its data directory, if there's nothing there
+- name: "mysql data is missing - copy default mysql data directory"
+  command: cp -Rp /var/lib/mysql /data/
+  register: restart_mysql
+  args:
+    creates: /data/mysql
+- service: name=mysql state=restarted
+  when: restart_mysql is defined
+
+# Setup mysql database
+- mysql_db: login_host=127.0.0.1 name={{ dbname }} state=present
+- mysql_user: login_host=127.0.0.1 name=data password={{ mysql_data_pwd }} priv={{ dbname }}.*:ALL state=present
+- mysql_user: login_host=127.0.0.1 name=root password={{ mysql_root_pwd }} state=present
+- template: src=root.my.cnf dest=/root/.my.cnf
