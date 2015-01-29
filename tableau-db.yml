@@ -1,0 +1,8 @@
+#!/usr/bin/env ansible-playbook -i hosts.customers
+
+---
+- hosts: tableau-dbs
+  sudo: yes
+
+  roles:
+    - role: tableau-db
