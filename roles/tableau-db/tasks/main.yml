@@ -35,6 +35,8 @@
 
 # Setup mysql database
 - mysql_db: login_host=127.0.0.1 name={{ dbname }} state=present
-- mysql_user: login_host=127.0.0.1 name=data password={{ mysql_data_pwd }} priv={{ dbname }}.*:ALL state=present
+- mysql_db: login_host=127.0.0.1 name=schema_info state=present
+- mysql_user: login_host=127.0.0.1 name=data password={{ mysql_data_pwd }} priv={{ dbname }}.*:ALL/schema_info.*:ALL state=present
 - mysql_user: login_host=127.0.0.1 name=root password={{ mysql_root_pwd }} state=present
 - template: src=root.my.cnf dest=/root/.my.cnf
+- template: src=ubuntu.my.cnf dest=/home/ubuntu/.my.cnf owner=ubuntu mode=0600

@@ -1,0 +1,4 @@
+[client]
+user=data
+host=127.0.0.1
+password={{ mysql_data_pwd }}
