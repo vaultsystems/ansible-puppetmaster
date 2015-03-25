@@ -1,6 +1,6 @@
 - authorized_key: user=ubuntu key="{{ item }}"
   with_items: authorized_keys
-- apt: pkg={{ item }}
+- apt: pkg="{{ item }}" update_cache=yes cache_valid_time=604800
   with_items:
     - mysql-server-5.6
     - python-mysqldb
@@ -9,11 +9,8 @@
   register: restart_mysql
 
 # Set up data volume at /data
-- name: "data volume is missing - partition and format {{ datavol }}"
-  shell: echo ';' | sfdisk /dev/{{ datavol }} && mkfs.ext4 /dev/{{ datavol }}1
-  args:
-    creates: /dev/{{ datavol }}1
-- mount: name=/data src=/dev/vdb1 state=mounted fstype=ext4
+- filesystem: fstype=ext4 dev=/dev/{{ datavol }}
+- mount: name=/data src=/dev/{{ datavol }} state=mounted fstype=ext4
 
 # Configure apparmor to let mysql work in that dir
 - copy: src=usr.sbin.mysqld dest=/etc/apparmor.d/local/usr.sbin.mysqld
